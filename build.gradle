@@ -1,19 +1,51 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'war'
+apply plugin: 'idea'
 
-group = 'br.com.serlets'
+/**
+ * ######### CONFIGURACOES GERAIS ###########
+ */
+description = "Servlets"
 version = '1.0-SNAPSHOT'
+archivesBaseName = 'servlets'
+buildDir = "dist"
+libsDirName = './'
+group = 'br.com.servlts'
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+
 }
 
-test {
-    useJUnitPlatform()
+war {
+    archiveName = 'servlets.war'
+}
+
+task deployLocal (dependsOn: ['war']){
+
+    doLast {
+        println "START: ${new Date().format('dd/MM/yyyy hh:mm:ss aa')}"
+        print "Deploy local para Wildfly : "
+
+        //Apago os .war antigos
+        ant.delete(includeEmptyDirs: 'true') {
+            fileset(dir: '/opt/wildfly-10.1.0.Final/standalone/deployments', includes: '*.war,*.deployed,*.undeployed')
+        }
+
+        println "\nCopiando WAR para /opt/wildfly-10.1.0.Final/standalone/deployments"
+
+        //Copio o novo .war para o servidor
+        copy {
+            from war.archivePath // Usamos o arquivo WAR gerado pelo plugin War
+            into '/opt/wildfly-10.1.0.Final/standalone/deployments'
+            println "\nWAR copiado para pasta deployments"
+        }
+    }
 }
