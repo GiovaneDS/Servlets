@@ -1,5 +1,7 @@
 package br.com.servlets;
 
+        import javax.servlet.RequestDispatcher;
+        import javax.servlet.ServletException;
         import javax.servlet.annotation.WebServlet;
         import javax.servlet.http.HttpServlet;
         import javax.servlet.http.HttpServletRequest;
@@ -11,25 +13,15 @@ package br.com.servlets;
 @WebServlet(urlPatterns = "/listaEmpresas")
 public class ListaEmpresaServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
-        System.out.println("Empresas Cadastradas");
-        String nomeEmpresa = req.getParameter("nome");
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
         Banco banco = new Banco();
         List<Empresa> lista = banco.getEmpresas();
 
-        PrintWriter out = resp.getWriter();
-        out.println("<html>");
-        out.println("<body>");
-        out.println("<ul>");
-        for (Empresa empresa : lista) {
-            out.println("<li>" +empresa.getNome() + "</li>");
-        }
-        out.println("</ul>");
-        out.println("</body>");
-        out.println("</html>");
+        req.setAttribute("empresas", lista);
 
-        System.out.println("o servlet nova empresa foi chamado");
+        RequestDispatcher rd = req.getRequestDispatcher("/listaEmpresas.jsp");
+        rd.forward(req, resp);
+
     }
 }
