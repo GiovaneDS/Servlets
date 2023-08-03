@@ -1,6 +1,7 @@
 # Servlets
 Introdução ao uso de Servlets e JSP com gerenciamento Gradle
-Automatização de Deply utilizando task gradle
+
+--Automatização de Deploy utilizando task gradle
 
 # Configuração do ambiente
 
